@@ -7,13 +7,13 @@ using Unity.MLAgents.Sensors;
 public class PlayerAgent : Agent
 {
     [SerializeField] private Transform _goal;
-    [SerializeField] private float _moveSpeed = 1.5f;
+    [SerializeField] private float _moveSpeed = 3f;
     [SerializeField] private float _jumpPower = 6f;
 
     //stores agent's renderer component - change colour when collides with wall, etc
     private Renderer _renderer;
 
-    private Vector2 _spawnPosition = new Vector3(-8f, -3.35f);
+    [SerializeField] private Transform _spawnPosition;// = new Vector3(-8f, -3.35f);
 
     [HideInInspector] public int CurrentEpisode = 0;
     [HideInInspector] public float CumulativeReward = 0f;
@@ -33,6 +33,10 @@ public class PlayerAgent : Agent
         Debug.Log("Episode: " + CurrentEpisode);
         Debug.Log("cumulative reward: " + CumulativeReward);
 
+        //reset checkpoints
+        Checkpoint.activated = false;
+        RespawnManager.Instance.SetCheckpoint(_spawnPosition.localPosition);
+
         CurrentEpisode++;
         CumulativeReward = 0f;
         _renderer.material.color = Color.blue;
@@ -44,13 +48,13 @@ public class PlayerAgent : Agent
     private void SpawnObjects()
     {
         //reset angents position
-        transform.localPosition = _spawnPosition;
+        transform.localPosition = _spawnPosition.localPosition;
 
         //randomise the distance within range
-        float randomDistance = Random.Range(-8f, 8f);
+        //float randomDistance = Random.Range(-8f, 8f);
 
         //apply the calcd position to the goal
-        _goal.localPosition = new Vector2(randomDistance, -3.35f);
+        //_goal.localPosition = new Vector2(randomDistance, -3.35f);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -72,21 +76,18 @@ public class PlayerAgent : Agent
     {
         var discreteActionsOut = actionsOut.DiscreteActions;
 
-        discreteActionsOut[0] = 0;//default action - do nothing
-
+        // Branch 0
         if (Input.GetKey(KeyCode.LeftArrow))
-        {
             discreteActionsOut[0] = 1;
-        }
         else if (Input.GetKey(KeyCode.RightArrow))
-        {
             discreteActionsOut[0] = 2;
-        }
-        else if (Input.GetKey(KeyCode.UpArrow))
-        {
-            discreteActionsOut[0] = 3;
-        }
+        else
+            discreteActionsOut[0] = 0; // no movement
+
+        // Branch 1
+        discreteActionsOut[1] = Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
     }
+
 
     //executing actions its given - called every step
     //actions holds the decision output from the ml agents backend
@@ -104,33 +105,39 @@ public class PlayerAgent : Agent
 
     public void MoveAgent(ActionSegment<int> act)
     {
-        var action = act[0];
+        int moveAction = act[0];  // left/right
+        int jumpAction = act[1];  // jump
 
-        switch (action)
+        Vector3 moveDir = Vector3.zero;
+        switch (moveAction)
         {
-            case 1://move left
-                transform.position += Vector3.left * _moveSpeed * Time.deltaTime;
+            case 1: // left
+                moveDir = Vector3.left;
                 break;
-            case 2://move right
-                transform.position += Vector3.right * _moveSpeed * Time.deltaTime;
-                break;
-            case 3://Jump
-                transform.position += Vector3.up * _jumpPower * Time.deltaTime;
+            case 2: // right
+                moveDir = Vector3.right;
                 break;
         }
+        transform.position += moveDir * _moveSpeed * Time.deltaTime;
+
+        if (jumpAction == 1)
+        {
+            transform.position += Vector3.up * _jumpPower * Time.deltaTime;
+        }
     }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Goal"))
         {
+            if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("goal");
             GoalReached();
         }
     }
 
     private void GoalReached()
     {
-        Debug.Log("goal reached");
         AddReward(1f);//large reward for reaching goal
         CumulativeReward = GetCumulativeReward();
 
@@ -141,6 +148,7 @@ public class PlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
+            if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("wall");
             //apply small negative reward
             AddReward(-0.05f);
 
@@ -156,11 +164,11 @@ public class PlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
+            if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("wall stay");
             //continually penalise the agent while its in contatct with the wall
             AddReward(-0.01f * Time.fixedDeltaTime);
         }
     }
-
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
@@ -171,5 +179,10 @@ public class PlayerAgent : Agent
                 _renderer.material.color = Color.blue;
             }
         }
+    }
+
+    public void Kill()
+    {
+        RespawnManager.Instance.Respawn(this);
     }
 }
