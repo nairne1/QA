@@ -35,7 +35,7 @@ public class PlayerAgent : Agent
 
         //reset checkpoints
         Checkpoint.activated = false;
-        RespawnManager.Instance.SetCheckpoint(_spawnPosition.localPosition);
+        RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
 
         CurrentEpisode++;
         CumulativeReward = 0f;
@@ -48,7 +48,7 @@ public class PlayerAgent : Agent
     private void SpawnObjects()
     {
         //reset angents position
-        transform.localPosition = _spawnPosition.localPosition;
+        transform.position = _spawnPosition.position;
 
         //randomise the distance within range
         //float randomDistance = Random.Range(-8f, 8f);
@@ -60,10 +60,10 @@ public class PlayerAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         //the goals postition - keep between -1, 1, ensure the inputs are within a similar range 
-        float goalPosx = _goal.localPosition.x / 5f;
+        float goalPosx = _goal.position.x / 5f;
 
         //the agents position
-        float agentPosx = transform.localPosition.x / 5f;
+        float agentPosx = transform.position.x / 5f;
 
         //sensor is the container for the observations we want the agent to know 
         //Vector Observation - space size, in the behaviour parameters, is how ever many of these floats we pass in
