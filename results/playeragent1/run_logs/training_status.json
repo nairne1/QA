@@ -27,15 +27,24 @@
                 "auxillary_file_paths": [
                     "results\\playeragent1\\PlayerAgent\\PlayerAgent-107959.pt"
                 ]
+            },
+            {
+                "steps": 128343,
+                "file_path": "results\\playeragent1\\PlayerAgent\\PlayerAgent-128343.onnx",
+                "reward": -2.000000089406967,
+                "creation_time": 1763774999.2009556,
+                "auxillary_file_paths": [
+                    "results\\playeragent1\\PlayerAgent\\PlayerAgent-128343.pt"
+                ]
             }
         ],
         "final_checkpoint": {
-            "steps": 107959,
+            "steps": 128343,
             "file_path": "results\\playeragent1\\PlayerAgent.onnx",
-            "reward": -2.2126667574048042,
-            "creation_time": 1763770893.6797678,
+            "reward": -2.000000089406967,
+            "creation_time": 1763774999.2009556,
             "auxillary_file_paths": [
-                "results\\playeragent1\\PlayerAgent\\PlayerAgent-107959.pt"
+                "results\\playeragent1\\PlayerAgent\\PlayerAgent-128343.pt"
             ]
         }
     },
