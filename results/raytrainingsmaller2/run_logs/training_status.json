@@ -1,0 +1,29 @@
+{
+    "PlayerAgent": {
+        "checkpoints": [
+            {
+                "steps": 11126,
+                "file_path": "results\\raytrainingsmaller2\\PlayerAgent\\PlayerAgent-11126.onnx",
+                "reward": null,
+                "creation_time": 1764006181.4898052,
+                "auxillary_file_paths": [
+                    "results\\raytrainingsmaller2\\PlayerAgent\\PlayerAgent-11126.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 11126,
+            "file_path": "results\\raytrainingsmaller2\\PlayerAgent.onnx",
+            "reward": null,
+            "creation_time": 1764006181.4898052,
+            "auxillary_file_paths": [
+                "results\\raytrainingsmaller2\\PlayerAgent\\PlayerAgent-11126.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.2.0.dev0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

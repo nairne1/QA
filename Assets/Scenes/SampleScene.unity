@@ -281,7 +281,7 @@ Transform:
   m_GameObject: {fileID: 484808552}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.022222223, y: -3.9333334, z: 0}
+  m_LocalPosition: {x: -5.5077786, y: 0.87, z: 0}
   m_LocalScale: {x: 1.1111112, y: 2.0722222, z: 1.1111112}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -566,7 +566,7 @@ Transform:
   m_GameObject: {fileID: 526996033}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.66, y: -3.35, z: 0}
+  m_LocalPosition: {x: 0.38, y: -3.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -775,7 +775,7 @@ Transform:
   m_GameObject: {fileID: 972880197}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.93, y: -3.9333334, z: 0}
+  m_LocalPosition: {x: 0.37, y: 0.75, z: 0}
   m_LocalScale: {x: 1.1111112, y: 2.0722222, z: 1.1111112}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -996,7 +996,7 @@ Transform:
   m_GameObject: {fileID: 1031291932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: -3.2, z: 0}
+  m_LocalPosition: {x: -8, y: -2.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1072,7 +1072,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1158,7 +1158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 2
+    VectorObservationSize: 6
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
@@ -1193,11 +1193,21 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 5000
   _goal: {fileID: 526996034}
-  _moveSpeed: 3
-  _jumpPower: 6
+  _hazard: {fileID: 1636784172}
   _spawnPosition: {fileID: 1963958438}
+  _moveSpeed: 4
+  _jumpPower: 9
   CurrentEpisode: 0
   CumulativeReward: 0
+  _forRayDist: 2
+  _downRayDist: 0.5
+  _raycastOffsetY: 0.5
+  _isGround:
+    serializedVersion: 2
+    m_Bits: 64
+  _isHazard:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &1636784171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,7 +1220,7 @@ GameObject:
   - component: {fileID: 1636784175}
   - component: {fileID: 1636784173}
   - component: {fileID: 1636784176}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SpikeHazard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1226,7 +1236,7 @@ Transform:
   m_GameObject: {fileID: 1636784171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.13, y: -4.15, z: 0}
+  m_LocalPosition: {x: -3.54, y: -4.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1378,7 +1388,7 @@ Transform:
   m_GameObject: {fileID: 1642084934}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.98, y: -4.15, z: 0}
+  m_LocalPosition: {x: -8.51, y: 0.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1529,7 +1539,7 @@ Transform:
   m_GameObject: {fileID: 1711535393}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 9.61, y: -1.38, z: 0}
+  m_LocalPosition: {x: 1.3299997, y: -1.38, z: 0}
   m_LocalScale: {x: 7.3130684, y: 0.565, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1647,7 +1657,7 @@ GameObject:
   - component: {fileID: 1758918686}
   - component: {fileID: 1758918687}
   - component: {fileID: 1758918688}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1795,7 +1805,7 @@ Transform:
   m_GameObject: {fileID: 1963958437}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8, y: -3.2, z: 0}
+  m_LocalPosition: {x: -8, y: -2.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

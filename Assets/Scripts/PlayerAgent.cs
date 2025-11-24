@@ -6,25 +6,68 @@ using Unity.MLAgents.Sensors;
 
 public class PlayerAgent : Agent
 {
+    [Header("Scene References")]
     [SerializeField] private Transform _goal;
-    [SerializeField] private float _moveSpeed = 3f;
-    [SerializeField] private float _jumpPower = 6f;
+    [SerializeField] private Transform _hazard;
+    [SerializeField] private Transform _spawnPosition;// = new Vector3(-8f, -3.35f);
+
+    [Header("Player Attributes")]
+    private Rigidbody2D _rb;
+    private bool _isGrounded = true;
+    [SerializeField] private float _moveSpeed = 4f;
+    [SerializeField] private float _jumpPower = 9f;
 
     //stores agent's renderer component - change colour when collides with wall, etc
     private Renderer _renderer;
 
-    [SerializeField] private Transform _spawnPosition;// = new Vector3(-8f, -3.35f);
+    //player velocity
+    private Vector2 _lastPos;
+    private float _velocityX;
 
+    //for training
     [HideInInspector] public int CurrentEpisode = 0;
     [HideInInspector] public float CumulativeReward = 0f;
+
+    //for raycast
+    [Header("Raycast Attributes")]
+    [SerializeField] private float _forRayDist = 2f;
+    [SerializeField] private float _downRayDist = 0.5f;
+
+    private RaycastHit2D forwardHit;
+    private RaycastHit2D downwardHit;
+    [SerializeField] private LayerMask _isGround;
+    [SerializeField] private LayerMask _isHazard;
 
     //called when the agent is first created 
     public override void Initialize()
     {
         //retreives the renderer component attached to the agent 
         _renderer = GetComponent<Renderer>();
+        _rb = GetComponent<Rigidbody2D>();
         CurrentEpisode = 0;
         CumulativeReward = 0f;
+
+        downwardHit = Physics2D.Raycast(transform.position, Vector2.down, _downRayDist, _isGround);
+        forwardHit = Physics2D.Raycast(transform.position, Vector2.right, _forRayDist, _isHazard);
+    }
+
+    private void OnDrawGizmos()
+    {
+        //down ray
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * _downRayDist);
+
+        //forward ray
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * _forRayDist);
+    }
+
+    private void FixedUpdate()
+    {
+        _velocityX = (transform.position.x - _lastPos.x) / Time.fixedDeltaTime;
+        _lastPos = transform.position;
+
+        _isGrounded = Physics2D.Raycast(transform.position, Vector2.down, _downRayDist, _isGround);
     }
 
     //reset environment on each restart
@@ -37,24 +80,11 @@ public class PlayerAgent : Agent
         Checkpoint.activated = false;
         RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
 
+        //reset
+        transform.position = _spawnPosition.position;
         CurrentEpisode++;
         CumulativeReward = 0f;
         _renderer.material.color = Color.blue;
-
-        //reposition agent and goal
-        SpawnObjects();
-    }
-
-    private void SpawnObjects()
-    {
-        //reset angents position
-        transform.position = _spawnPosition.position;
-
-        //randomise the distance within range
-        //float randomDistance = Random.Range(-8f, 8f);
-
-        //apply the calcd position to the goal
-        //_goal.localPosition = new Vector2(randomDistance, -3.35f);
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -67,8 +97,23 @@ public class PlayerAgent : Agent
 
         //sensor is the container for the observations we want the agent to know 
         //Vector Observation - space size, in the behaviour parameters, is how ever many of these floats we pass in
-        sensor.AddObservation(goalPosx);
-        sensor.AddObservation(agentPosx);
+        sensor.AddObservation(goalPosx/5f);//1
+        sensor.AddObservation(agentPosx/5f);//2
+
+        //forward ray detect hazard
+        bool hazardAhead = forwardHit.collider != null;
+
+        //downward ray detect hazard
+        bool groundBelow = downwardHit.collider != null;
+
+        sensor.AddObservation(hazardAhead ? 1f : 0f);//3
+        sensor.AddObservation(groundBelow ? 1f : 0f);//4
+
+        //velocity of agent
+        sensor.AddObservation(_velocityX / 10f);//5
+
+        //goal direction sign: -1, 0, or 1
+        sensor.AddObservation(Mathf.Sign(_goal.position.x - transform.position.x));//6
     }
 
     //telling the agent exactly what to do
@@ -88,7 +133,6 @@ public class PlayerAgent : Agent
         discreteActionsOut[1] = Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
     }
 
-
     //executing actions its given - called every step
     //actions holds the decision output from the ml agents backend
     public override void OnActionReceived(ActionBuffers actions)
@@ -96,11 +140,50 @@ public class PlayerAgent : Agent
         //move the agent using the action
         MoveAgent(actions.DiscreteActions);
 
-        //penalty given each step, so it reaches goal asap
-        AddReward(-2f / MaxStep);
+        float dir = Mathf.Sign(_goal.position.x - transform.position.x); // +1 = right, -1 = left
+        float velocity = _rb.linearVelocity.x;// normalize velocity
 
-        //update the cumulative reward
-        CumulativeReward = GetCumulativeReward();
+        // Reward movement toward the goal
+        AddReward(0.003f * dir * velocity);
+
+        //AddReward(-0.001f);//light step penalty
+
+        //forward ray detect hazard
+        bool hazardAhead = forwardHit.collider != null;
+
+        //downward ray detect hazard
+        bool groundBelow = downwardHit.collider != null;
+
+        // reward for jumping when hazard ahead
+        if (hazardAhead && actions.DiscreteActions[1] == 1)
+        {
+            AddReward(0.2f);
+        }
+
+        //larger reward deduction for jumping with no hazard
+        if (!hazardAhead && actions.DiscreteActions[1] == 1)
+        {
+            AddReward(-0.05f);
+        }
+
+        //tiny minus reward for moving left 
+        if (actions.DiscreteActions[0] == 1)
+        {
+            AddReward(-0.02f);
+        }
+
+        // reward for jumping over gap (no ground)
+        //if (!groundBelow && actions.DiscreteActions[1] == 1)
+        //{
+        //    AddReward(0.002f);
+        //}
+
+        //negative reward for falling off level
+        if (transform.position.y < -10f)
+        {
+            AddReward(-1f);
+            EndEpisode();
+        }
     }
 
     public void MoveAgent(ActionSegment<int> act)
@@ -108,24 +191,23 @@ public class PlayerAgent : Agent
         int moveAction = act[0];  // left/right
         int jumpAction = act[1];  // jump
 
-        Vector3 moveDir = Vector3.zero;
+        float moveDir = 0f;
         switch (moveAction)
         {
             case 1: // left
-                moveDir = Vector3.left;
+                moveDir = -1f;
                 break;
             case 2: // right
-                moveDir = Vector3.right;
+                moveDir = 1f;
                 break;
         }
-        transform.position += moveDir * _moveSpeed * Time.deltaTime;
+        _rb.linearVelocity = new Vector2(moveDir * _moveSpeed, _rb.linearVelocity.y);
 
-        if (jumpAction == 1)
+        if (jumpAction == 1 && _isGrounded)
         {
-            transform.position += Vector3.up * _jumpPower * Time.deltaTime;
+            _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpPower);
         }
     }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -183,6 +265,8 @@ public class PlayerAgent : Agent
 
     public void Kill()
     {
-        RespawnManager.Instance.Respawn(this);
+        AddReward(-1f);
+        EndEpisode();
+        //RespawnManager.Instance.Respawn(this);
     }
 }
