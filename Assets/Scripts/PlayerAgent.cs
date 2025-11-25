@@ -83,7 +83,6 @@ public class PlayerAgent : Agent
         //reset
         transform.position = _spawnPosition.position;
         CurrentEpisode++;
-        CumulativeReward = 0f;
         _renderer.material.color = Color.blue;
     }
 
@@ -144,39 +143,36 @@ public class PlayerAgent : Agent
         float velocity = _rb.linearVelocity.x;// normalize velocity
 
         // Reward movement toward the goal
-        AddReward(0.003f * dir * velocity);
-
-        //AddReward(-0.001f);//light step penalty
+        AddReward(0.01f * dir * velocity);
 
         //forward ray detect hazard
         bool hazardAhead = forwardHit.collider != null;
-
-        //downward ray detect hazard
+        //downward ray detect ground
         bool groundBelow = downwardHit.collider != null;
 
         // reward for jumping when hazard ahead
         if (hazardAhead && actions.DiscreteActions[1] == 1)
         {
-            AddReward(0.2f);
+            AddReward(0.3f);
         }
 
         //larger reward deduction for jumping with no hazard
         if (!hazardAhead && actions.DiscreteActions[1] == 1)
         {
-            AddReward(-0.05f);
+            AddReward(-0.02f);
         }
 
         //tiny minus reward for moving left 
         if (actions.DiscreteActions[0] == 1)
         {
-            AddReward(-0.02f);
+            AddReward(-0.01f);
         }
 
-        // reward for jumping over gap (no ground)
-        //if (!groundBelow && actions.DiscreteActions[1] == 1)
-        //{
-        //    AddReward(0.002f);
-        //}
+        //reward for being passed the hazard
+        if (transform.position.x > _hazard.position.x)
+        {
+            AddReward(0.05f);
+        }
 
         //negative reward for falling off level
         if (transform.position.y < -10f)
@@ -220,7 +216,7 @@ public class PlayerAgent : Agent
 
     private void GoalReached()
     {
-        AddReward(1f);//large reward for reaching goal
+        AddReward(2f);//large reward for reaching goal
         CumulativeReward = GetCumulativeReward();
 
         EndEpisode();
@@ -266,6 +262,7 @@ public class PlayerAgent : Agent
     public void Kill()
     {
         AddReward(-1f);
+        CumulativeReward = GetCumulativeReward();
         EndEpisode();
         //RespawnManager.Instance.Respawn(this);
     }
