@@ -3,6 +3,10 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using System.Collections.Generic;
+using System;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
+using System.Runtime.CompilerServices;
 
 public class PlayerAgent : Agent
 {
@@ -38,6 +42,50 @@ public class PlayerAgent : Agent
     [SerializeField] private LayerMask _isGround;
     [SerializeField] private LayerMask _isHazard;
 
+    [Header("Exploration Rewards")]
+    [SerializeField] private float _stepPenalty = -0.001f;
+
+    [Header("Progress Rewards")]
+    [SerializeField] private float _newMaxXRewardScale = 0.02f;
+    private HashSet<Vector2Int> _visitedCells;
+    private float _maxX;
+
+    [Header("Landing Trigger Rewards")]
+    [SerializeField] private float _landingReward = 0.2f;
+
+    private HashSet<Collider2D> _visitedLandingTriggers;
+    private bool _triggeredLand;
+
+    [Header("Phase Progress Tracking")]
+    [SerializeField] private int goalRateWindow = 100;
+
+    //static so it persists across episodes
+    private static int totalEpisodesEnded = 0;
+    private static int totalGoalsReached = 0;
+
+    private static Queue<int> recentGoalHits = new Queue<int>();
+    private static int recentGoalHitSum = 0;
+
+    //prevent double-counting
+    private bool episodeAlreadyEnded = false;
+
+    private bool _isJumping = false;
+
+    //Trigger & Death Tracking
+    private static int totalTriggersReached = 0;
+    private static int totalDeaths = 0;
+
+    private static Queue<int> recentTriggerHits = new Queue<int>();
+    private static Queue<int> recentDeaths = new Queue<int>();
+
+    private static int recentTriggerHitSum = 0;
+    private static int recentDeathSum = 0;
+
+    //per-ep flags
+    private bool episodeTriggeredLand = false;
+    private bool episodeDied = false;
+
+
     //called when the agent is first created 
     public override void Initialize()
     {
@@ -46,9 +94,7 @@ public class PlayerAgent : Agent
         _rb = GetComponent<Rigidbody2D>();
         CurrentEpisode = 0;
         CumulativeReward = 0f;
-
-        downwardHit = Physics2D.Raycast(transform.position, Vector2.down, _downRayDist, _isGround);
-        forwardHit = Physics2D.Raycast(transform.position, Vector2.right, _forRayDist, _isHazard);
+        _triggeredLand = false;
     }
 
     private void OnDrawGizmos()
@@ -67,6 +113,10 @@ public class PlayerAgent : Agent
         _velocityX = (transform.position.x - _lastPos.x) / Time.fixedDeltaTime;
         _lastPos = transform.position;
 
+        //update raycast every frame
+        downwardHit = Physics2D.Raycast(transform.position, Vector2.down, _downRayDist, _isGround);
+        forwardHit = Physics2D.Raycast(transform.position, Vector2.right, _forRayDist, _isHazard);
+
         _isGrounded = Physics2D.Raycast(transform.position, Vector2.down, _downRayDist, _isGround);
     }
 
@@ -76,15 +126,31 @@ public class PlayerAgent : Agent
         Debug.Log("Episode: " + CurrentEpisode);
         Debug.Log("cumulative reward: " + CumulativeReward);
 
-        //reset checkpoints
-        Checkpoint.activated = false;
-        RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
+        // If we have NOT activated a checkpoint yet, default checkpoint is spawn.
+        if (!Checkpoint.activated)
+        {
+            RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
+        }
 
-        //reset
-        transform.position = _spawnPosition.position;
+        // Always respawn at the CURRENT checkpoint (spawn initially, checkpoint later)
+        RespawnManager.Instance.Respawn(this);
+
         CurrentEpisode++;
         _renderer.material.color = Color.blue;
+
+        //reset progress trackers
+        _visitedCells = new HashSet<Vector2Int>();
+        _maxX = transform.position.x;
+
+        _visitedLandingTriggers = new HashSet<Collider2D>();
+        _triggeredLand = false;
+
+        episodeAlreadyEnded = false;
+
+        episodeTriggeredLand = false;
+        episodeDied = false;
     }
+
 
     public override void CollectObservations(VectorSensor sensor)
     {
@@ -93,26 +159,27 @@ public class PlayerAgent : Agent
 
         //the agents position
         float agentPosx = transform.position.x / 5f;
+        float agentPosy = transform.position.y / 5f;
 
         //sensor is the container for the observations we want the agent to know 
         //Vector Observation - space size, in the behaviour parameters, is how ever many of these floats we pass in
-        sensor.AddObservation(goalPosx/5f);//1
-        sensor.AddObservation(agentPosx/5f);//2
+        sensor.AddObservation(goalPosx);//1
+        sensor.AddObservation(agentPosx);//2
+        sensor.AddObservation(agentPosy);//3
 
         //forward ray detect hazard
         bool hazardAhead = forwardHit.collider != null;
-
         //downward ray detect hazard
         bool groundBelow = downwardHit.collider != null;
 
-        sensor.AddObservation(hazardAhead ? 1f : 0f);//3
-        sensor.AddObservation(groundBelow ? 1f : 0f);//4
+        sensor.AddObservation(hazardAhead ? 1f : 0f);//4
+        sensor.AddObservation(groundBelow ? 1f : 0f);//5
 
         //velocity of agent
-        sensor.AddObservation(_velocityX / 10f);//5
+        sensor.AddObservation(_velocityX / 10f);//6
 
         //goal direction sign: -1, 0, or 1
-        sensor.AddObservation(Mathf.Sign(_goal.position.x - transform.position.x));//6
+        sensor.AddObservation(Mathf.Sign(_goal.position.x - transform.position.x));//7
     }
 
     //telling the agent exactly what to do
@@ -139,46 +206,43 @@ public class PlayerAgent : Agent
         //move the agent using the action
         MoveAgent(actions.DiscreteActions);
 
-        float dir = Mathf.Sign(_goal.position.x - transform.position.x); // +1 = right, -1 = left
-        float velocity = _rb.linearVelocity.x;// normalize velocity
+        //small step penalty
+        AddReward(_stepPenalty);
 
-        // Reward movement toward the goal
-        AddReward(0.01f * dir * velocity);
+        //progress reward
+        float x = transform.position.x;
 
-        //forward ray detect hazard
-        bool hazardAhead = forwardHit.collider != null;
-        //downward ray detect ground
-        bool groundBelow = downwardHit.collider != null;
-
-        // reward for jumping when hazard ahead
-        if (hazardAhead && actions.DiscreteActions[1] == 1)
+        if (x > _maxX)
         {
-            AddReward(0.3f);
+
+            float delta = x - _maxX;
+            AddReward(_newMaxXRewardScale * delta);
+            _maxX = x;
         }
 
-        //larger reward deduction for jumping with no hazard
-        if (!hazardAhead && actions.DiscreteActions[1] == 1)
+        if (!_isGrounded && actions.DiscreteActions[1] == 1)
         {
-            AddReward(-0.02f);
+
+            AddReward(-0.003f);//small minus reward for pressing jump while already in air, reduce spamming
         }
 
-        //tiny minus reward for moving left 
-        if (actions.DiscreteActions[0] == 1)
+        //discourage jumping when already jumping
+        if (_isJumping && !_isGrounded)
         {
-            AddReward(-0.01f);
-        }
-
-        //reward for being passed the hazard
-        if (transform.position.x > _hazard.position.x)
-        {
-            AddReward(0.05f);
+            AddReward(-0.001f);
         }
 
         //negative reward for falling off level
-        if (transform.position.y < -10f)
+        if (transform.position.y < _spawnPosition.position.y - 6)
         {
-            AddReward(-1f);
-            EndEpisode();
+            AddReward(-1.5f);
+            episodeDied = true;
+            EndWithReason("fell off");
+        }
+
+        if (MaxStep > 0 && StepCount >= MaxStep - 1)
+        {
+            Debug.Log($"About to hit MaxStep. StepCount={StepCount}, Reward={GetCumulativeReward()}");
         }
     }
 
@@ -201,6 +265,7 @@ public class PlayerAgent : Agent
 
         if (jumpAction == 1 && _isGrounded)
         {
+            _isJumping = true;
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, _jumpPower);
         }
     }
@@ -212,41 +277,35 @@ public class PlayerAgent : Agent
             if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("goal");
             GoalReached();
         }
-    }
 
-    private void GoalReached()
-    {
-        AddReward(2f);//large reward for reaching goal
-        CumulativeReward = GetCumulativeReward();
-
-        EndEpisode();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Wall"))
+        //landing trigger positive reward 
+        if (other.CompareTag("LandTrigger"))
         {
-            if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("wall");
-            //apply small negative reward
-            AddReward(-0.05f);
-
-            //change colour
-            if (_renderer != null)
+            if (!_triggeredLand)
             {
-                _renderer.material.color = Color.red;
+                if (_visitedLandingTriggers.Add(other))
+                {
+                    AddReward(_landingReward);
+                    _triggeredLand = true;
+                    episodeTriggeredLand = true;
+                    Debug.Log("Triggered Land");
+                }
             }
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void GoalReached()
     {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            if (SimpleRunLogger.Instance) SimpleRunLogger.Instance.Log("wall stay");
-            //continually penalise the agent while its in contatct with the wall
-            AddReward(-0.01f * Time.fixedDeltaTime);
-        }
+        AddReward(3f);//large reward for reaching goal
+        CumulativeReward = GetCumulativeReward();
+
+        //reset checkpoint back to spawn
+        Checkpoint.activated = false;
+        RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
+
+        EndWithReason("goal");
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
@@ -258,12 +317,68 @@ public class PlayerAgent : Agent
             }
         }
     }
-
     public void Kill()
     {
-        AddReward(-1f);
+        AddReward(-1f); 
+        episodeDied = true;
         CumulativeReward = GetCumulativeReward();
+        EndWithReason("hazard");
+    }
+
+    private void EndWithReason(string reason)
+    {
+        if (episodeAlreadyEnded) return;
+        episodeAlreadyEnded = true;
+
+        bool hitGoal = reason == "goal";
+        bool died = episodeDied;
+        bool hitTrigger = episodeTriggeredLand;
+
+        totalEpisodesEnded++;
+        if (hitGoal) totalGoalsReached++;
+        if (hitTrigger) totalTriggersReached++;
+        if (died) totalDeaths++;
+
+        //goal
+        recentGoalHits.Enqueue(hitGoal ? 1 : 0);
+        recentGoalHitSum += hitGoal ? 1 : 0;
+
+        if (recentGoalHits.Count > goalRateWindow)
+            recentGoalHitSum -= recentGoalHits.Dequeue();
+
+        //trigger
+        recentTriggerHits.Enqueue(hitTrigger ? 1 : 0);
+        recentTriggerHitSum += hitTrigger ? 1 : 0;
+        if (recentTriggerHits.Count > goalRateWindow)
+            recentTriggerHitSum -= recentTriggerHits.Dequeue();
+
+        //death
+        recentDeaths.Enqueue(died ? 1 : 0);
+        recentDeathSum += died ? 1 : 0;
+        if (recentDeaths.Count > goalRateWindow)
+            recentDeathSum -= recentDeaths.Dequeue();
+
+        //custom tensorboard graphs to refer to 
+        float goalOverall = (float)totalGoalsReached / totalEpisodesEnded;
+        float goalWindow = (float)recentGoalHitSum / recentGoalHits.Count;
+
+        float triggerOverall = (float)totalTriggersReached / totalEpisodesEnded;
+        float triggerWindow = (float)recentTriggerHitSum / recentTriggerHits.Count;
+
+        float deathOverall = (float)totalDeaths / totalEpisodesEnded;
+        float deathWindow = (float)recentDeathSum / recentDeaths.Count;
+
+        var stats = Academy.Instance.StatsRecorder;
+
+        stats.Add("custom/goal_rate_overall", goalOverall, StatAggregationMethod.MostRecent);
+        stats.Add($"custom/goal_rate_last_{goalRateWindow}", goalWindow, StatAggregationMethod.MostRecent);
+
+        stats.Add("custom/trigger_rate_overall", triggerOverall, StatAggregationMethod.MostRecent);
+        stats.Add($"custom/trigger_rate_last_{goalRateWindow}", triggerWindow, StatAggregationMethod.MostRecent);
+
+        stats.Add("custom/death_rate_overall", deathOverall, StatAggregationMethod.MostRecent);
+        stats.Add($"custom/death_rate_last_{goalRateWindow}", deathWindow, StatAggregationMethod.MostRecent);
+
         EndEpisode();
-        //RespawnManager.Instance.Respawn(this);
     }
 }
