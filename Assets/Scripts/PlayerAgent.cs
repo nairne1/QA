@@ -5,8 +5,6 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using System.Collections.Generic;
 using System;
-using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
-using System.Runtime.CompilerServices;
 
 public class PlayerAgent : Agent
 {
@@ -127,10 +125,10 @@ public class PlayerAgent : Agent
         Debug.Log("cumulative reward: " + CumulativeReward);
 
         // If we have NOT activated a checkpoint yet, default checkpoint is spawn.
-        if (!Checkpoint.activated)
-        {
-            RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
-        }
+        //if (!Checkpoint.activated)
+        //{
+        //    RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
+        //}
 
         // Always respawn at the CURRENT checkpoint (spawn initially, checkpoint later)
         RespawnManager.Instance.Respawn(this);
@@ -300,7 +298,7 @@ public class PlayerAgent : Agent
         CumulativeReward = GetCumulativeReward();
 
         //reset checkpoint back to spawn
-        Checkpoint.activated = false;
+        //Checkpoint.activated = false;
         RespawnManager.Instance.SetCheckpoint(_spawnPosition.position);
 
         EndWithReason("goal");

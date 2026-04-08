@@ -9,6 +9,8 @@ TagManager:
   - Checkpoint
   - LandTrigger
   - Hazard
+  - Collectible
+  - SoftlockPit
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - UI
   - Ground
   - Hazard
-  - 
+  - Player
   - 
   - 
   - 

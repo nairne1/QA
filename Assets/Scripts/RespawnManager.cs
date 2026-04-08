@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class RespawnManager : MonoBehaviour
@@ -5,8 +6,9 @@ public class RespawnManager : MonoBehaviour
     public static RespawnManager Instance;
 
     public Transform initialSpawnPoint;
-
     Vector3 currentSpawn;
+
+    public static event Action OnAnyRespawn;
 
     void Awake()
     {
@@ -25,5 +27,17 @@ public class RespawnManager : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         player.transform.SetParent(null);
         player.transform.position = currentSpawn;
+
+        OnAnyRespawn?.Invoke();
+    }
+
+    public void Respawn(PlayerAgentExplore player)
+    {
+        var rb = player.GetComponent<Rigidbody2D>();
+        rb.linearVelocity = Vector2.zero;
+        player.transform.SetParent(null);
+        player.transform.position = currentSpawn;
+
+        OnAnyRespawn?.Invoke();
     }
 }

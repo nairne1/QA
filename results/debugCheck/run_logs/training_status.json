@@ -1,0 +1,56 @@
+{
+    "PlayerAgent": {
+        "checkpoints": [
+            {
+                "steps": 2232,
+                "file_path": "results\\debugCheck\\PlayerAgent\\PlayerAgent-2232.onnx",
+                "reward": -615.0716896057129,
+                "creation_time": 1775525902.175487,
+                "auxillary_file_paths": [
+                    "results\\debugCheck\\PlayerAgent\\PlayerAgent-2232.pt"
+                ]
+            },
+            {
+                "steps": 7960,
+                "file_path": "results\\debugCheck\\PlayerAgent\\PlayerAgent-7960.onnx",
+                "reward": -608.209114074707,
+                "creation_time": 1775526067.3385854,
+                "auxillary_file_paths": [
+                    "results\\debugCheck\\PlayerAgent\\PlayerAgent-7960.pt"
+                ]
+            },
+            {
+                "steps": 11464,
+                "file_path": "results\\debugCheck\\PlayerAgent\\PlayerAgent-11464.onnx",
+                "reward": -617.423092842102,
+                "creation_time": 1775526190.1348433,
+                "auxillary_file_paths": [
+                    "results\\debugCheck\\PlayerAgent\\PlayerAgent-11464.pt"
+                ]
+            },
+            {
+                "steps": 12488,
+                "file_path": "results\\debugCheck\\PlayerAgent\\PlayerAgent-12488.onnx",
+                "reward": null,
+                "creation_time": 1775526292.9141018,
+                "auxillary_file_paths": [
+                    "results\\debugCheck\\PlayerAgent\\PlayerAgent-12488.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 12488,
+            "file_path": "results\\debugCheck\\PlayerAgent.onnx",
+            "reward": null,
+            "creation_time": 1775526292.9141018,
+            "auxillary_file_paths": [
+                "results\\debugCheck\\PlayerAgent\\PlayerAgent-12488.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.2.0.dev0",
+        "torch_version": "2.2.2+cu121"
+    }
+}
