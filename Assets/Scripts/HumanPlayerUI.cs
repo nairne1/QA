@@ -32,6 +32,10 @@ public class HumanPlayerUI : MonoBehaviour
     [Tooltip("UI position offset from top-left")]
     public Vector2 uiOffset = new Vector2(10, 10);
 
+    [Header("Bug Report Integration")]
+    [Tooltip("Bug report UI reference (to check if open)")]
+    public BugReportUI bugReportUI;
+
     private GUIStyle _textStyle;
     private GUIStyle _warningStyle;
     private GUIStyle _pausedStyle;
@@ -68,15 +72,19 @@ public class HumanPlayerUI : MonoBehaviour
     {
         if (player == null) return;
 
+        //Don't render if this component or GameObject is disabled
+        if (!enabled || !gameObject.activeInHierarchy) return;
+
+        //Don't render if bug report panel is open
+        if (bugReportUI != null && bugReportUI.bugReportPanel != null && bugReportUI.bugReportPanel.activeSelf)
+            return;
+
+        //Don't render if paused
+        if (GameManager.Instance != null && GameManager.Instance.IsPaused)
+            return;
+
         float yPos = uiOffset.y;
         float lineHeight = fontSize + 10;
-
-        //show PAUSED indicator
-        if (GameManager.Instance != null && GameManager.Instance.IsPaused)
-        {
-            GUI.Label(new Rect(uiOffset.x, yPos, 300, lineHeight), " PAUSED", _pausedStyle);
-            yPos += lineHeight + 5;
-        }
 
         //play timer
         if (showPlayTimer)
@@ -91,7 +99,7 @@ public class HumanPlayerUI : MonoBehaviour
         {
             float remaining = GameManager.Instance.SessionTimeRemaining;
             bool isWarning = remaining <= GameManager.Instance.warningTime;
-            
+
             string sessionText = $"Session Time: {FormatTime(remaining)}";
             GUI.Label(new Rect(uiOffset.x, yPos, 300, lineHeight), sessionText, isWarning ? _warningStyle : _textStyle);
             yPos += lineHeight;

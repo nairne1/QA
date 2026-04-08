@@ -12,28 +12,41 @@ public class PauseUI : MonoBehaviour
     [Tooltip("Optional: Information text")]
     public Text infoText;
 
+    [Header("Bug Reporting")]
+    [Tooltip("Bug report UI component")]
+    public BugReportUI bugReportUI;
+
     private void Start()
     {
-        //hook up button events
+        //Hook up button events
         if (resumeButton != null)
             resumeButton.onClick.AddListener(OnResumeClicked);
 
         if (endSessionButton != null)
             endSessionButton.onClick.AddListener(OnEndSessionClicked);
 
-        //update info text
+        //Update info text
         if (infoText != null)
         {
-            infoText.text = "Game Paused\n\nUse this time to document bugs in your spreadsheet.\n\nPress ESC or P to resume.";
+            infoText.text = "Game Paused\n\nClick 'Report Bug' to document issues.\n\nPress ESC or P to resume.";
         }
     }
 
     private void Update()
     {
-        //allow ESC/P to resume from pause menu
+        //Allow ESC/P to resume from pause menu (only if bug report panel is closed)
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.P))
         {
-            OnResumeClicked();
+            //Check if bug report panel is open
+            if (bugReportUI != null && bugReportUI.bugReportPanel != null && bugReportUI.bugReportPanel.activeSelf)
+            {
+                //Close bug report panel instead
+                bugReportUI.CloseBugReportPanel();
+            }
+            else
+            {
+                OnResumeClicked();
+            }
         }
     }
 

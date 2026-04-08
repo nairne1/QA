@@ -101,9 +101,12 @@ public class GameManager : MonoBehaviour
             player.ResetPlayer(); //reset player stats
         }
 
-        //enable UI
+        //enable UI (make GameObject active, not just component)
         if (playerUI != null)
+        {
+            playerUI.gameObject.SetActive(true);
             playerUI.enabled = true;
+        }
 
         //reset session timer
         _sessionTimeRemaining = sessionTimeLimit;
@@ -155,7 +158,11 @@ public class GameManager : MonoBehaviour
     private void Pause()
     {
         Debug.Log("[GameManager] Game paused for bug documentation");
-        
+
+        //hide player UI (GameObject stays active to preserve data, but OnGUI won't render)
+        if (playerUI != null)
+            playerUI.gameObject.SetActive(false);
+
         //show pause panel
         if (pausePanel != null)
             pausePanel.SetActive(true);
@@ -168,6 +175,10 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("[GameManager] Game resumed");
         
+        //show player UI again
+        if (playerUI != null)
+            playerUI.gameObject.SetActive(true);
+
         //hide pause panel
         if (pausePanel != null)
             pausePanel.SetActive(false);
@@ -217,7 +228,10 @@ public class GameManager : MonoBehaviour
 
         //disable UI
         if (playerUI != null)
+        {
+            playerUI.gameObject.SetActive(false);
             playerUI.enabled = false;
+        }
 
         //pause game
         Time.timeScale = 0f;
