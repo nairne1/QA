@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-//Hazard trigger zone. Can be configured to be a bug that doesn't kill the player, but instead logs a bug found.
+//hazard trigger can be configured to be a bug that doesn't kill the player, but instead logs a bug found for the gaent
 public class Hazard : MonoBehaviour
 {
     [Tooltip("If true, hazard is bugged")]
@@ -9,6 +9,11 @@ public class Hazard : MonoBehaviour
 
     [Tooltip("Unique bug report ID")]
     public string bugId = "BUG_HZ_01";
+
+    //public getter for whether this hazard is a bug
+    public bool IsBug => isBug;
+
+    //reset sets the layer to Hazard and makes sure the collider is a trigger
     void Reset()
     {
         gameObject.layer = LayerMask.NameToLayer("Hazard");
@@ -16,17 +21,21 @@ public class Hazard : MonoBehaviour
         col.isTrigger = true;
     }
 
+    //detects when a player enters the hazard
     void OnTriggerEnter2D(Collider2D other)
     {
+        //only act if the entering object is the player
         if (!other.CompareTag("Player")) return;
 
-        var agent = other.GetComponent<QAExplorerAgentPhase1>();
+        //try to get AI agent first
+        var agent = other.GetComponent<SimplifiedCoverage>();
         if (agent != null) {
 
             HandleAgent(agent);
             return;
         }
 
+        //check for human player controller
         var human = other.GetComponent<HumanPlayerController>();
         if (human != null)
         {
@@ -35,20 +44,24 @@ public class Hazard : MonoBehaviour
         }
     }
 
-    private void HandleAgent(QAExplorerAgentPhase1 agent) { 
-    
-        if (agent != null) {
+    private void HandleAgent(SimplifiedCoverage agent)
+    {
+        //if agent isnt null, register the hazard test and either kill the agent or log a bug found
+        if (agent != null)
+        {
+            agent.RegisterHazardTest(bugId);
+
             if (!isBug)
             {
-                //normal hazard - end episode with penalty
+                // normal hazard
                 agent.Die();
             }
             else
             {
-                //bug hazard - doesn't kill
+                // bug hazard - doesn't kill
                 agent.FoundBug($"hazard:{bugId}");
             }
-         }
+        }
     }
 
     private void HandleHuman(HumanPlayerController human) {
@@ -58,10 +71,6 @@ public class Hazard : MonoBehaviour
             //normal hazard
             human.Kill();
         }
-        else
-        {
-            //bug hazard
-            human.FoundBug($"hazard:{bugId}");
-        }
+        //do nothing if bug as playe should report on their own
     }
 }

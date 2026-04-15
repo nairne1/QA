@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(Collider2D))]
 //collectible bug: 3 variants - working, broken, duplication.
-//each collectible in the level can be set to one of these variants to test if the agent can detect the bug based on its behaviour and logging
+//each collectible in the level can be set to one of these variants
+//to test if the agent can detect the bug based on its behaviour and logging
 public class CollectibleBug : MonoBehaviour
 {
     [Header("Bug Variant Selection")]
@@ -11,6 +12,7 @@ public class CollectibleBug : MonoBehaviour
 
     [Tooltip("Unique instance id")]
     [SerializeField] private string _itemId = "Item_ID_1";
+    //public getter for item ID so it can be included in logs
     public string InstanceId => _itemId;
 
     [Tooltip("Bug report id used when logging")]
@@ -24,23 +26,24 @@ public class CollectibleBug : MonoBehaviour
     private bool _pickedUp = false; //whether the agent has picked up this collectible in the current episode
     private bool _wasActiveAtStart = true;//used to reset to initial state at episode begin
     
-    //track collections across episodes for duplication detection (AI only)
+    //track collections across episodes for duplication detection
     private static Dictionary<string, int> _episodeCollectionCount = new Dictionary<string, int>();
     private static int _currentEpisode = 0;
 
-    //track if human player has collected this before
+    //track if agent has collected this before
+    private bool _agentCollectedBefore = false;
     private bool _humanCollectedBefore = false;
     private bool _isSubscribed = false;
 
-    //3 possible bug variants
+    //3 bug variants
     public enum BugVariant
     {
-        Working,      // Normal: gives score, disappears, stays gone
-        Broken,       // Bug: doesn't disappear, doesn't give score, agent logs immediately
-        Duplication   // Bug: disappears, gives score, reappears on respawn, agent logs on 2nd pickup
+        Working, //working: gives normal score, disappears, stays gone on respawn
+        Broken, //broken: doesn't disappear, doesn't give score, agent logs immediately
+        Duplication //duplication: disappears, gives score, reappears on respawn, agent logs on 2nd pickup
     }
 
-    // On reset ensure the collider is set up correctly and tagged as "Collectible"
+    //on reset ensure the collider is set up correctly and tagged as "Collectible"
     void Reset()
     {
         var col = GetComponent<Collider2D>();
@@ -48,35 +51,44 @@ public class CollectibleBug : MonoBehaviour
         gameObject.tag = "Collectible";
     }
 
+    //initialises the collectible generating a unique ID and subscribing to respawn events for the duplication bug variant
     private void Awake()
     {
         //generate a unique item ID to differentiate multiple collectibles in the same level
         _itemId = gameObject.GetInstanceID().ToString();
+        //remember if the collectible was active at the start to reset properly later (for duplication bug)
         _wasActiveAtStart = gameObject.activeSelf;
 
         //subscribe in Awake so it persists even when GameObject is inactive
-        SubscribeToRespawnEvent();
+        SubscribeToRespawnEvents();
     }
 
+    //unsubscribe from events when destroyed to avoid memory leaks
     private void OnDestroy()
     {
         //only unsubscribe when actually destroyed, not when disabled
-        UnsubscribeFromRespawnEvent();
+        UnsubscribeFromRespawnEvents();
     }
 
-    private void SubscribeToRespawnEvent()
+    //subscribe to respawn events to handle the duplication bug variant
+    private void SubscribeToRespawnEvents()
     {
         if (_isSubscribed) return;
-        
+
+        //subscribe to both human and agent respawn events since the same collectible can be collected by either
         HumanPlayerController.OnHumanPlayerRespawn += OnHumanPlayerRespawned;
+        SimplifiedCoverage.OnAgentRespawn += OnAgentRespawned;
         _isSubscribed = true;
     }
 
-    private void UnsubscribeFromRespawnEvent()
+    //unsubscribe from events to avoid memory leaks when the object is destroyed
+    private void UnsubscribeFromRespawnEvents()
     {
         if (!_isSubscribed) return;
-        
+
+        //unsubscribe from both human and agent respawn events
         HumanPlayerController.OnHumanPlayerRespawn -= OnHumanPlayerRespawned;
+        SimplifiedCoverage.OnAgentRespawn -= OnAgentRespawned;
         _isSubscribed = false;
     }
 
@@ -86,7 +98,7 @@ public class CollectibleBug : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         //try to get AI agent first
-        var agent = other.GetComponent<QAExplorerAgentPhase1>();
+        var agent = other.GetComponent<SimplifiedCoverage>();
         if (agent != null)
         {
             HandleAgent(agent);
@@ -102,7 +114,8 @@ public class CollectibleBug : MonoBehaviour
         }
     }
 
-    private void HandleAgent(QAExplorerAgentPhase1 agent)
+    //handle AI agent collision based on the selected bug variant
+    private void HandleAgent(SimplifiedCoverage agent)
     {
         //track episode changes to reset collection counts
         if (_currentEpisode != agent.CurrentEpisode)
@@ -127,6 +140,7 @@ public class CollectibleBug : MonoBehaviour
         }
     }
 
+    //handle human player collision based on the selected bug variant
     private void HandleHuman(HumanPlayerController human)
     {
         //human experiences bugs naturally without notifications
@@ -146,33 +160,26 @@ public class CollectibleBug : MonoBehaviour
         }
     }
 
-    //=== AI AGENT HANDLERS ===
+    //AI Variant Handlers
 
-    private void HandleWorkingVariantAgent(QAExplorerAgentPhase1 agent)
+    private void HandleWorkingVariantAgent(SimplifiedCoverage agent)
     {
         // Working variant: give score, disappear, stay gone
         if (_pickedUp) return;
         _pickedUp = true;
 
-        agent.AddReward(collectReward);
-
-        if (SimpleRunLogger.Instance)
-            SimpleRunLogger.Instance.Log($"collectible_working:{_itemId}:collected");
-
         gameObject.SetActive(false);
     }
 
-    private void HandleBrokenVariantAgent(QAExplorerAgentPhase1 agent)
+    private void HandleBrokenVariantAgent(SimplifiedCoverage agent)
     {
         //log bug
         agent.FoundBug($"collectible_broken:{brokenBugId}");
-
-        if (SimpleRunLogger.Instance)
-            SimpleRunLogger.Instance.Log($"bug_found:collectible_broken:{brokenBugId}");
     }
 
-    private void HandleDuplicationVariantAgent(QAExplorerAgentPhase1 agent)
+    private void HandleDuplicationVariantAgent(SimplifiedCoverage agent)
     {
+        //prevent multiple pickups in the same episode
         if (_pickedUp) return;
         _pickedUp = true;
 
@@ -192,21 +199,16 @@ public class CollectibleBug : MonoBehaviour
         if (pickupCount > 1)
         {
             agent.FoundBug($"collectible_duplication:{duplicationBugId}");
-
-            if (SimpleRunLogger.Instance)
-                SimpleRunLogger.Instance.Log($"bug_found:collectible_duplication:{duplicationBugId}");
-        }
-        else
-        {
-            if (SimpleRunLogger.Instance)
-                SimpleRunLogger.Instance.Log($"collectible_duplication:{_itemId}:first_pickup");
         }
 
-        //disappear (normal behavior)
+        //mark that agent has collected this before
+        _agentCollectedBefore = true;
+
+        //disappear
         gameObject.SetActive(false);
     }
 
-    //=== HUMAN PLAYER HANDLERS ===
+    //Humnan Player Handlers
 
     private void HandleWorkingVariantHuman(HumanPlayerController human)
     {
@@ -222,21 +224,17 @@ public class CollectibleBug : MonoBehaviour
 
     private void HandleBrokenVariantHuman(HumanPlayerController human)
     {
-        //BUG: Item doesn't disappear, doesn't give reward/score
-        //Human notices: "I touched it but nothing happened, it's still there"
-        //No notification - they discover the bug naturally
+        //since broken, do nothing, as shouldn't log for human player 
     }
 
     private void HandleDuplicationVariantHuman(HumanPlayerController human)
     {
-        //BUG: Item disappears and gives score, but will reappear if player dies/respawns
-        //Human notices: "Wait, I already collected this earlier" (can farm score)
-        //No notification - they discover the bug naturally
+        //item disappears and gives score, but will reappear if player dies/respawns
         
         if (_pickedUp) return;
         _pickedUp = true;
 
-        //give score (this is the bug - they can collect it multiple times!)
+        //give score
         human.AddScore(scoreValue);
 
         //mark that human has collected this before
@@ -245,13 +243,27 @@ public class CollectibleBug : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    //called when human player respawns (for duplication bug)
+    //called when AI agent respawns at checkpoint
+    private void OnAgentRespawned()
+    {
+        //only duplication variant reappears after respawn
+        if (variant != BugVariant.Duplication) return;
+
+        //if agent had collected this before, reactivate it
+        if (_agentCollectedBefore)
+        {
+            _pickedUp = false;
+            gameObject.SetActive(true);
+        }
+    }
+
+    //called when human player respawns
     private void OnHumanPlayerRespawned()
     {
         //only duplication variant reappears after respawn
         if (variant != BugVariant.Duplication) return;
 
-        //if human had collected this before, reactivate it (BUG!)
+        //if human had collected this before, reactivate it
         if (_humanCollectedBefore)
         {
             _pickedUp = false;
@@ -259,25 +271,22 @@ public class CollectibleBug : MonoBehaviour
         }
     }
 
-    //Called to reset for new human testing session
+    //called to reset for new human testing session
     public void ResetForNewSession()
     {
-        Debug.Log($"[CollectibleBug] Resetting {_itemId} for new session. Variant: {variant}");
-
         //reset all state
         _pickedUp = false;
+        _agentCollectedBefore = false;
         _humanCollectedBefore = false;
         gameObject.SetActive(_wasActiveAtStart);
     }
 
-    //Called manually to reset collectibles at episode begin (for AI)
+    //called manually to reset collectibles at episode begin
     public void ResetCollectible()
     {
         //reset all collectibles to their initial state at episode begin
         _pickedUp = false;
+        _agentCollectedBefore = false;
         gameObject.SetActive(_wasActiveAtStart);
-
-        if (SimpleRunLogger.Instance && _wasActiveAtStart)
-            SimpleRunLogger.Instance.Log($"collectible_reset:{variant}:{_itemId}");
     }
 }
