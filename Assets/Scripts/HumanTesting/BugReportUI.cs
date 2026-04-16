@@ -171,7 +171,6 @@ public class BugReportUI : MonoBehaviour
         if (player != null)
         {
             report.position = player.transform.position;
-            report.playTime = player.PlayTime;
             report.deathCount = player.DeathCount;
             report.score = player.Score;
         }

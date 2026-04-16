@@ -13,7 +13,6 @@ public class BugReport
     public string stepsToReproduce;
     public int severity; // 1-5 (1=minor, 5=critical)
     public Vector2 position;
-    public float playTime;
     public int deathCount;
     public int score;
 
@@ -39,7 +38,6 @@ public class BugReport
         stepsToReproduce = "";
         severity = 3; // Default to medium
         position = Vector2.zero;
-        playTime = 0f;
         deathCount = 0;
         score = 0;
     }
@@ -49,7 +47,7 @@ public class BugReport
     {
         return $"\"{timestamp}\",\"{EscapeCSV(bugTitle)}\",\"{EscapeCSV(expectedResult)}\",\"{EscapeCSV(actualResult)}\"," +
                $"\"{EscapeCSV(stepsToReproduce)}\",{severity},\"({position.x:F2}, {position.y:F2})\"," +
-               $"{playTime:F2},{deathCount},{score}";
+               $"{deathCount},{score}";
     }
 
     //escape quotes in CSV fields
@@ -62,6 +60,6 @@ public class BugReport
     //CSV header
     public static string CSVHeader()
     {
-        return "Session Time,Bug Title,Expected Result,Actual Result,Steps to Reproduce,Severity (1-5),Position,Play Time,Death Count,Score";
+        return "Session Time,Bug Title,Expected Result,Actual Result,Steps to Reproduce,Severity (1-5),Position,Death Count,Score";
     }
 }
