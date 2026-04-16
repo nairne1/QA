@@ -610,6 +610,8 @@ public class SimplifiedCoverage : Agent
     {
         if (string.IsNullOrEmpty(bugId)) bugId = "unknown_bug_id";
 
+        Debug.Log($"Found bug: {bugId}");
+
         //hashset ensures we only reward once per unique bug ID
         if (_foundBugs.Add(bugId))
         {
