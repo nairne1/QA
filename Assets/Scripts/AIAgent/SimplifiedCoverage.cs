@@ -211,32 +211,32 @@ public class SimplifiedCoverage : Agent
 
         //add velocity observations 
         Vector2 velocity = _rb != null ? _rb.linearVelocity : Vector2.zero;
-        sensor.AddObservation(Mathf.Clamp(velocity.x / 10f, -1f, 1f));
-        sensor.AddObservation(Mathf.Clamp(velocity.y / 10f, -1f, 1f));
+        sensor.AddObservation(Mathf.Clamp(velocity.x / 10f, -1f, 1f));//1
+        sensor.AddObservation(Mathf.Clamp(velocity.y / 10f, -1f, 1f));//2
         //add grounded status
         sensor.AddObservation(_isGrounded ? 1f : 0f);
 
         //add raycast observations in 8 directions
-        sensor.AddObservation(Ray01(Vector2.right));
-        sensor.AddObservation(Ray01(Vector2.left));
-        sensor.AddObservation(Ray01(Vector2.up));
-        sensor.AddObservation(Ray01(Vector2.down));
-        sensor.AddObservation(Ray01((Vector2.right + Vector2.up).normalized));
-        sensor.AddObservation(Ray01((Vector2.left + Vector2.up).normalized));
-        sensor.AddObservation(Ray01((Vector2.right + Vector2.down).normalized));
-        sensor.AddObservation(Ray01((Vector2.left + Vector2.down).normalized));
+        sensor.AddObservation(Ray01(Vector2.right));//3
+        sensor.AddObservation(Ray01(Vector2.left));//4
+        sensor.AddObservation(Ray01(Vector2.up));//5
+        sensor.AddObservation(Ray01(Vector2.down));//6
+        sensor.AddObservation(Ray01((Vector2.right + Vector2.up).normalized));//7
+        sensor.AddObservation(Ray01((Vector2.left + Vector2.up).normalized));//8
+        sensor.AddObservation(Ray01((Vector2.right + Vector2.down).normalized));//9
+        sensor.AddObservation(Ray01((Vector2.left + Vector2.down).normalized));//10
 
         //add direction to nearest unexplored walkable cell
         if (coverage != null)
         {
             Vector2 dir = coverage.GetDirectionToUnexploredWalkable(GetVisitPosition());
-            sensor.AddObservation(dir.x);
-            sensor.AddObservation(dir.y);
+            sensor.AddObservation(dir.x);//11
+            sensor.AddObservation(dir.y);//12
         }
         else
         {
-            sensor.AddObservation(0f);
-            sensor.AddObservation(0f);
+            sensor.AddObservation(0f);//11
+            sensor.AddObservation(0f);//12
         }
     }
 

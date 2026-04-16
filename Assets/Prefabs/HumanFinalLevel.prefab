@@ -3579,7 +3579,7 @@ MonoBehaviour:
   contextInfoText: {fileID: 39625296915500124}
   confirmationText: {fileID: 8355584571755636040}
   player: {fileID: 4736640501289859608}
-  playerUI: {fileID: 0}
+  playerUI: {fileID: 2650164862495757214}
   isActive: 0
 --- !u!1 &3131486993720717899
 GameObject:
@@ -12519,6 +12519,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5836619926784069072}
     m_Modifications:
+    - target: {fileID: 2122052253208710273, guid: 8e7b736e731fe5b418a946ef8e3eef92, type: 3}
+      propertyPath: bugReportUI
+      value: 
+      objectReference: {fileID: 8730460677019456286}
     - target: {fileID: 3644954912498700153, guid: 8e7b736e731fe5b418a946ef8e3eef92, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 27
