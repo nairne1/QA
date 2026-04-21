@@ -20,21 +20,81 @@ The main menu should appear, select the mode you wish to see: trained, untrained
 
 
 
-### How I Trained the Agent
+### How to Train the Agent
 
 I used Anaconda Powershell to train my agent. I used Unity version 6000.0.60f1, Python version 3.14.0, numpy 1.23.5 (used to organise and manipulate all the numerical data the agent learns from), and torch 2.2.1 (learns the behaviour of the agent)
 
 Here's what I typed into the prompt:
 
-1\. conda activate mlagents
+1\. Create a new Conda environment with Python 3.14.0
 
-2\. make sure directory is correct, e.g. cd "C:\\Users\\nairn\\Documents\\Turtle Agent"
+conda create -n mlagents python=3.14.0
 
-3\. install/import torch and numpy versions
 
-4\. mlagents-learn --run-id=agent1
 
-5\. if using yaml file: mlagents-learn Behaviour\\PlayerAgent1.yaml --run-id=agent1
+2\. Activate the environment
+
+conda activate mlagents
+
+
+
+3\. Install necessary packages
+
+conda install numpy=1.23.5
+
+pip3 install torch\~=2.2.1 --index-url https://download.pytorch.org/whl/cu121
+
+
+
+4\. Start Python to verify installation
+
+python
+
+import torch
+
+import numpy
+
+exit()
+
+
+
+4.5. Clear the terminal (optional)
+
+clear
+
+
+
+5\. Change directory to ML-Agents folder
+
+example: cd D:\\Unity\\ml-agents
+
+
+
+6\. Install ML-Agents from the local source files
+
+python -m pip install ./ml-agents-envs
+
+python -m pip install ./ml-agents
+
+
+
+7\. Check ML-Agents installation
+
+mlagents-learn --help
+
+
+
+8\. Start a training session for the Basic environment
+
+mlagents-learn config/ppo/Basic.yaml --run-id=run1
+
+
+
+8.5. Force overwrite or resume previous run
+
+mlagents-learn config/ppo/Basic.yaml --run-id=run1 --force
+
+mlagents-learn config/ppo/Basic.yaml --run-id=run1 --resume
 
 
 
