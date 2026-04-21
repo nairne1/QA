@@ -20,15 +20,33 @@ The main menu should appear, select the mode you wish to see: trained, untrained
 
 
 
+### How I Trained the Agent
+
+I used Anaconda Powershell to train my agent.
+
+Here's what I typed into the prompt:
+
+1\. conda activate mlagents
+
+2\. make sure directory is correct, e.g. cd "C:\\Users\\nairn\\Documents\\Turtle Agent"
+
+3\. mlagents-learn --run-id=agent1
+
+4\. if using yaml file: mlagents-learn Behaviour\\PlayerAgent1.yaml --run-id=agent1
+
+
+
+
+
 ### Scene Breakdown
 
-#### Main Menu: 
+#### Main Menu:
 
 * Navigation hub for seeing the different trained AI models.
 
 
 
-#### Untrained AI Scene: 
+#### Untrained AI Scene:
 
 * Shows the agent before training.
 * Behaviour appears random and inefficient.
