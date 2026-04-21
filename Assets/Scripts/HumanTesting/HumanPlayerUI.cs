@@ -28,7 +28,7 @@ public class HumanPlayerUI : MonoBehaviour
     [Tooltip("Show pause hint")]
     public bool showPauseHint = true;
     [Tooltip("UI text size")]
-    public int fontSize = 16;
+    public int fontSize = 36;
     [Tooltip("UI position offset from top-left")]
     public Vector2 uiOffset = new Vector2(10, 10);
 
@@ -50,15 +50,24 @@ public class HumanPlayerUI : MonoBehaviour
     private GUIStyle _pausedStyle;
     private GUIStyle _hintStyle;
 
+    public float scale = 1f;
+    private int scaledFontSize;
+
     //initialize GUI styles
     private void Start()
     {
+        //scale based on 1080p reference
+        scale = Screen.height / 1080f;
+        scaledFontSize = Mathf.RoundToInt(fontSize * scale);
+
         //create GUI style
         _textStyle = new GUIStyle();
-        _textStyle.fontSize = fontSize;
+        _textStyle.fontSize = scaledFontSize;
         _textStyle.normal.textColor = Color.white;
         _textStyle.fontStyle = FontStyle.Bold;
-        
+        _textStyle.normal.background = MakeTex(2, 2, new Color(0, 0, 0, 0.5f));
+        _textStyle.padding = new RectOffset(5, 5, 5, 5);
+
         //add black outline for readability
         _textStyle.normal.background = MakeTex(2, 2, new Color(0, 0, 0, 0.5f));
         _textStyle.padding = new RectOffset(5, 5, 5, 5);
@@ -70,12 +79,18 @@ public class HumanPlayerUI : MonoBehaviour
         //create paused style (yellow text)
         _pausedStyle = new GUIStyle(_textStyle);
         _pausedStyle.normal.textColor = Color.yellow;
-        _pausedStyle.fontSize = fontSize + 4;
+        _pausedStyle.fontSize = scaledFontSize + Mathf.RoundToInt(4 * scale);
 
         //create hint style (gray text, smaller)
         _hintStyle = new GUIStyle(_textStyle);
         _hintStyle.normal.textColor = new Color(0.7f, 0.7f, 0.7f);
-        _hintStyle.fontSize = fontSize - 2;
+        _hintStyle.fontSize = Mathf.Max(12, scaledFontSize - 2);
+
+        //scale layout values too
+        minPanelWidth *= scale;
+        minHintWidth *= scale;
+        panelPadding *= scale;
+        uiOffset *= scale;
     }
 
     private void OnGUI()
@@ -91,7 +106,7 @@ public class HumanPlayerUI : MonoBehaviour
             return;
 
         float yPos = uiOffset.y;
-        float lineHeight = fontSize + 10;
+        float lineHeight = scaledFontSize + (10f * scale);
 
         //build all main UI lines first so we can calculate one consistent width
         System.Collections.Generic.List<string> mainLines = new System.Collections.Generic.List<string>();
@@ -162,7 +177,7 @@ public class HumanPlayerUI : MonoBehaviour
             hintWidth = Mathf.Max(hintWidth, _hintStyle.CalcSize(new GUIContent(hint2)).x + panelPadding);
 
             GUI.Label(new Rect(uiOffset.x, yPos, hintWidth, lineHeight), hint1, _hintStyle);
-            GUI.Label(new Rect(uiOffset.x, yPos + 25, hintWidth, lineHeight), hint2, _hintStyle);
+            GUI.Label(new Rect(uiOffset.x, yPos + (45f * scale), hintWidth, lineHeight), hint2, _hintStyle);
         }
     }
 
