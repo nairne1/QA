@@ -215,7 +215,7 @@ Training was performed externally using Unity ML-Agents and Python (via Anaconda
   * time it took to find bug
   * position of agent
   * bug id
-* For human they can manually record:
+* For human testing, they can manually record:
 
   * bug title
   * expected result
