@@ -56,7 +56,7 @@ import numpy
 
 
 
-You can recheck the version is correct with print(torch.\_\_version\_\_) and print(numpy.\_\_version\_\_)
+You can recheck the version is correct with: 'print(torch.\_\_version\_\_)', and 'print(numpy.\_\_version\_\_)'
 
 
 
