@@ -31,7 +31,7 @@ I used Anaconda PowerShell to train my agent. I used Unity version 6000.0.60f1, 
 
 
 
-To train an agent, go into sample scene (Assets->Scenes->SampleScene), make sure hierarchy is just Main Camera, Global Light 2D, and the AIFinalLevel prefab, delete anything else if that's other objects in the scene, then do the following commands in Anaconda PowerShell.
+To train an agent, go into sample scene (Assets->Scenes->SampleScene), make sure hierarchy is just Main Camera, Global Light 2D, and the AIFinalLevel prefab, delete anything other objects in the scene, then do the following commands in Anaconda PowerShell.
 
 
 
