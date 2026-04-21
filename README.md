@@ -25,6 +25,12 @@ The warnings in the console are just adding components to objects that require t
 
 
 
+After running, there will be heatmaps created, and run logs created. The heatmaps show where the AI or human player have been, and the run logs show what bugs the agent or human player has logged.
+
+All heatmaps will show in the Heatmaps folder, the human player bugs report will show in the BugReports folder, and the AI agent's bugs will show in the Run Logs folder.
+
+
+
 ### Agent Models Breakdown
 
 Trained AI: fully trained model demonstrating learned exploration and bug detection behaviour.
@@ -99,7 +105,7 @@ Note: Recreating the training environment is not required to run this project, a
   * 'A' and 'D', or left and right arrow keys to move left and right.
   * Space to jump.
   * Esc or 'P' to pause the game.
-  * 'J' to show object hitboxes, and 'H' to show player heatmap.
+  * 'J' to show object hitboxes, 'R' to respawn, and 'H' to show player heatmap.
 
 
 
