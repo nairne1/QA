@@ -100,6 +100,8 @@ mlagents-learn config/ppo/Basic.yaml --run-id=run1 --resume
 
 In-order to see the Tensorboard graphs, write this in another Powershell Prompt:
 
+
+
 1. conda activate mlagents
 
 2\. cd C:\\Users\\nairn\\Documents\\QA
