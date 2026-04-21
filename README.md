@@ -17,7 +17,7 @@ This project compares AI-based testing with human testing to evaluate effectiven
 1. Download the project from GitHub (code->Download Zip).
 2. Unzip the folder.
 3. Download Unity Hub and Unity version 6000.0.60f1.
-4. Click Add->Add Project from Disk, select the folder named 'QA-main' inside the folder you've downloaded.
+4. Click Add->Add Project from Disk and select the extracted project folder.
 5. Open the project, this may take some time the first time you do it.
 6. Once opened, open the MainMenu scene (Assets->Scenes->MainMenu) and press play.
 
@@ -25,13 +25,13 @@ The warnings in the console are just adding components to objects that require t
 
 
 
-### Agent Breakdown
+### Agent Models Breakdown
 
-Trained AI: this model is the most trained AI.
+Trained AI: fully trained model demonstrating learned exploration and bug detection behaviour.
 
-Training in Progress: this model shows the model mid-training, how far it's come from being completely untrained.
+Training in Progress: shows intermediate behaviour during training, highlighting learning progression.
 
-Untrained AI: shows what the AI looks like before it has trained at all.
+Untrained AI: demonstrates initial random behaviour before learning occurs.
 
 
 
@@ -50,6 +50,15 @@ mlagents-learn Behaviour/PlayerAgent1.yaml --run-id=trained
 The Unity scene must be running while executing this command.
 
 Note: Recreating the training environment is not required to run this project, as trained models are included.
+
+
+
+### What to Observe
+
+* How the trained AI explores the level
+* How it detects and triggers bugs
+* Differences between trained and untrained behaviour
+* Comparison with human testing performance
 
 
 
@@ -83,7 +92,7 @@ Note: Recreating the training environment is not required to run this project, a
 
 #### Human Testing Scene:
 
-* Shows what the human testers has access to.
+* Shows what human testers have access to.
 * They had the same controls as the AI agent, and they could manually report the bugs they encountered.
 * Controls:
 
@@ -110,14 +119,14 @@ The AI agent is trained using reinforcement learning. It learns by interacting w
 The agent is then penalised for:
 
 * Dying
-* Moving away form the nearest walkable area
+* Moving away from the nearest walkable area
 * Being 'stuck' (staying in the same general area for too long)
 
 
 
 ### Training Method
 
-Training was performed externally using Unity ML-Agents and Python (via Anaconda Powershell). The Unity project acted as the simulation environment, while training was controlled through python.
+Training was performed externally using Unity ML-Agents and Python (via Anaconda PowerShell). The Unity project acted as the simulation environment, while training was controlled through python.
 
 
 
@@ -156,9 +165,10 @@ Training was performed externally using Unity ML-Agents and Python (via Anaconda
 * Control the behaviour of the seeded bugs.
 * Examples:
 
-  * broken triggers
-  * faulty collectibles
-  * detection issues
+  * Failed goal trigger (random failure chance)
+  * Missing collider (player falls through)
+  * Soft lock (player becomes stuck)
+  * Faulty collectible (does not register correctly)
 
 
 
