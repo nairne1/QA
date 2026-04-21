@@ -1,0 +1,11 @@
+Bug Title,Expected Result,Actual Result,Steps to Reproduce,Severity (1-5),Position,
+Jump inconsistency,Sometimes can't reach a platform,All platforms should be reachable by the player at all times,"Jump next to platform, player will only sometimes make it to platform",5,"(12,3)",Example 
+Can't collect coin,Increment score by 10,Nothing,Run over coin,2,"68,-72",
+Obstacle does not kill player,Player respawns at last checkpoint/ at spawn,polayer phases through spike,Run over obstacle,3,"75, -72",
+Coin respawns when player dies,Coin should remain invisible once collected,whenever the player dies it respawns,"collect coin, kill player",1,"80, -72",
+Player gets stuck in pit,It should kill the player so they can try again to progress,Player is stuck unless they respawn themselves,jump into pit,4,"91,-79",
+Checkpoint does not change players spawn position,Running over the checkpoint should change the players spawn position,Does not update the position so you lose progress when you die,"Go to the second checkpoint, run over it and then respawn",4,"100,-72",
+Obstacle does not kill player,Player respawns at last checkpoint/ at spawn,polayer phases through spike,Run over obstacle,3,"104, -70",
+Platform has no collision,Player should be able to jump onto platform to collect coin,Player phases through platform,Attemp to jump on platform from below and the plkayer will pass through it,3,"116, -72",
+Can't collect coin,Increment score by 10,Nothing,Run over coin,2,"116, -70",
+Goal works intermittently ,Should print to console that the goal has been reached,Does it less than half of the time,Run over the goal 10 times and it will have printed one to three times,4,"121, -72",
