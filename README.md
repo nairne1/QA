@@ -15,11 +15,11 @@ This project compares AI-based testing with human testing to evaluate effectiven
 ### How to Run the Project
 
 1. Download the project from GitHub (code->Download Zip).
-2. Unzip the folder, once unzipped, rename the folder anything.
+2. Unzip the folder.
 3. Download Unity Hub and Unity version 6000.0.60f1.
 4. Click Add->Add Project from Disk, select the folder named 'QA-main' inside the folder you've downloaded.
 5. Open the project, this may take some time the first time you do it.
-6. Once opened, you may be in an untitled scene (name of scene in the top left in hierarchy), if so, select the assets folder, go into the scene folder, you can select the Main Menu scene and run (play button in top middle of screen) to see the trained agent, untrained agent, and training in-progress agent.
+6. Once opened, open the MainMenu scene (Assets->Scenes->MainMenu) and press play.
 
 The warnings in the console are just adding components to objects that require them, they can be ignored.
 
@@ -29,9 +29,9 @@ The warnings in the console are just adding components to objects that require t
 
 Trained AI: this model is the most trained AI.
 
-Training in Progress: this model shows the model mis training, how far it's come from being completely untrained.
+Training in Progress: this model shows the model mid-training, how far it's come from being completely untrained.
 
-Untrained AI: shows what the AI look before it has trained at all.
+Untrained AI: shows what the AI looks like before it has trained at all.
 
 
 
@@ -39,19 +39,15 @@ Untrained AI: shows what the AI look before it has trained at all.
 
 The agent was trained externally using Unity ML-Agents with Python (Anaconda environment).
 
-
-
 Training was run using:
 
 
 
-mlagents-learn config/qa\_agent.yaml --run-id=QA\_Run
+mlagents-learn Behaviour/PlayerAgent1.yaml --run-id=trained
 
 
 
 The Unity scene must be running while executing this command.
-
-
 
 Note: Recreating the training environment is not required to run this project, as trained models are included.
 
@@ -89,8 +85,12 @@ Note: Recreating the training environment is not required to run this project, a
 
 * Shows what the human testers has access to.
 * They had the same controls as the AI agent, and they could manually report the bugs they encountered.
+* Controls:
 
-
+  * 'A' and 'D', or left and right arrow keys to move left and right.
+  * Space to jump.
+  * Esc or 'P' to pause the game.
+  * 'J' to show object hitboxes, and 'H' to show player heatmap.
 
 
 
