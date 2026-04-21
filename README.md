@@ -21,7 +21,7 @@ This project compares AI-based testing with human testing to evaluate effectiven
 5. Open the project, this may take some time the first time you do it.
 6. Once opened, you may be in an untitled scene (name of scene in the top left in hierarchy), if so, select the assets folder, go into the scene folder, you can select the Main Menu scene and run (play button in top middle of screen) to see the trained agent, untrained agent, and training in-progress agent.
 
-6.5. The warnings in the console are just adding components to objects that require them, they can be ignored.
+The warnings in the console are just adding components to objects that require them, they can be ignored.
 
 
 
