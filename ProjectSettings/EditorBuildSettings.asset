@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TrainingInProgress.unity
     guid: c652ecfe4e2ffc848a9d092daec4a691
+  - enabled: 1
+    path: Assets/Scenes/HumanTesting.unity
+    guid: 0976f4cc70b81c448a983ed3e67447dc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -25,103 +25,35 @@ The warnings in the console are just adding components to objects that require t
 
 
 
-### How to Train the Agent
+### Agent Breakdown
 
-I used Anaconda PowerShell to train my agent. I used Unity version 6000.0.60f1, Python version 3.14.0, NumPy 1.23.5 (used to organise and manipulate all the numerical data the agent learns from), and torch 2.2.1 (learns the behaviour of the agent)
+Trained AI: this model is the most trained AI.
 
+Training in Progress: this model shows the model mis training, how far it's come from being completely untrained.
 
-
-To train an agent, go into sample scene (Assets->Scenes->SampleScene), make sure hierarchy is just Main Camera, Global Light 2D, and the AIFinalLevel prefab, delete anything other objects in the scene, then do the following commands in Anaconda PowerShell.
-
-
-
-Here's what I typed into the prompt:
-
-1\. Create a new Conda environment with Python 3.14.0
-
-conda create -n mlagents python=3.14.0
+Untrained AI: shows what the AI look before it has trained at all.
 
 
 
-2\. Activate the environment
+### AI Training Breakdown
 
-conda activate mlagents
-
-
-
-3\. Install necessary packages
-
-conda install numpy=1.23.5
-
-pip3 install torch\~=2.2.1 --index-url https://download.pytorch.org/whl/cu121
+The agent was trained externally using Unity ML-Agents with Python (Anaconda environment).
 
 
 
-4\. Start Python to verify installation
-
-python
-
-import torch
-
-import numpy
+Training was run using:
 
 
 
-You can recheck the version is correct with: 'print(torch.\_\_version\_\_)', and 'print(numpy.\_\_version\_\_)'
+mlagents-learn config/qa\_agent.yaml --run-id=QA\_Run
 
 
 
-exit()
+The Unity scene must be running while executing this command.
 
 
 
-4.5. Clear the terminal (optional)
-
-clear
-
-
-
-5\. Change directory to ML-Agents folder
-
-example: cd C:\\Documents\\UnityProject
-
-
-
-6\. Install ML-Agents from the local source files
-
-python -m pip install ./ml-agents-envs
-
-python -m pip install ./ml-agents
-
-
-
-7\. Check ML-Agents installation
-
-mlagents-learn --help
-
-
-
-8\. Start a training session for the Basic environment
-
-mlagents-learn config/ppo/Basic.yaml --run-id=run1
-
-
-
-8.5. Force overwrite or resume previous run
-
-mlagents-learn config/ppo/Basic.yaml --run-id=run1 --force
-
-mlagents-learn config/ppo/Basic.yaml --run-id=run1 --resume
-
-
-
-In-order to see the Tensorboard graphs, write this in another Powershell Prompt:
-
-1. conda activate mlagents
-2. cd C:\\Users\\nairn\\Documents\\QA
-3. tensorboard --logdir=results
-
-
+Note: Recreating the training environment is not required to run this project, as trained models are included.
 
 
 
@@ -150,6 +82,15 @@ In-order to see the Tensorboard graphs, write this in another Powershell Prompt:
 #### Training Progress Scene:
 
 * Shows training development.
+
+
+
+#### Human Testing Scene:
+
+* Shows what the human testers has access to.
+* They had the same controls as the AI agent, and they could manually report the bugs they encountered.
+
+
 
 
 

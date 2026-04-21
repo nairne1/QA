@@ -19,7 +19,7 @@ public class MenuUI : MonoBehaviour
             startButton.onClick.AddListener(OnStartClicked);
 
         if (quitButton != null)
-            quitButton.onClick.AddListener(OnQuitClicked);
+            //quitButton.onClick.AddListener(OnQuitClicked);
 
         UpdateSessionInfo();
     }
@@ -42,9 +42,9 @@ public class MenuUI : MonoBehaviour
     }
 
     //quit application when quit button is clicked
-    private void OnQuitClicked()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.QuitGame();
-    }
+    //private void OnQuitClicked()
+    //{
+    //    if (GameManager.Instance != null)
+    //        GameManager.Instance.QuitGame();
+    //}
 }
