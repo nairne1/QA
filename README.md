@@ -198,6 +198,7 @@ Training was performed externally using Unity ML-Agents and Python (via Anaconda
 
 * Tracks which areas of the level have been explored.
 * Used to reward/penalise exploration behaviour.
+* When used in the scene, it has visualisation to help see where the agent has been - yellow if the cell has not been visited yet, and green if it has.
 
 
 
@@ -205,6 +206,7 @@ Training was performed externally using Unity ML-Agents and Python (via Anaconda
 
 * Generates visual representation of agent/human movement.
 * Used for analysis of exploration patterns.
+* The heatmap is saved in the Heatmaps folder.
 
 
 
