@@ -72,7 +72,7 @@ clear
 
 5\. Change directory to ML-Agents folder
 
-example: cd D:\\Unity\\ml-agents
+example: cd C:\\Documents\\UnityProject
 
 
 
