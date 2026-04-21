@@ -54,6 +54,12 @@ import torch
 
 import numpy
 
+
+
+You can recheck the version is correct with print(torch.\_\_version) and print(numpy.\_\_version)
+
+
+
 exit()
 
 
@@ -61,6 +67,8 @@ exit()
 4.5. Clear the terminal (optional)
 
 clear
+
+
 
 
 
