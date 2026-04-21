@@ -15,17 +15,25 @@ This project compares AI-based testing with human testing to evaluate effectiven
 ### How to Run the Project
 
 1. Download the project from GitHub (code->Download Zip).
-2. Unzip into folder, rename to anything.
+2. Unzip the folder, once unzipped, rename the folder anything.
 3. Download Unity Hub and Unity version 6000.0.60f1.
 4. Click Add->Add Project from Disk, select the folder named 'QA-main' inside the folder you've downloaded.
 5. Open the project, this may take some time the first time you do it.
-6. Once opened, you may be in an untitled scene (name of scene in the top left in heirarchy), if so, select the assets folder, go into the scene folder, you can select the Main Menu scene and run (play button in top middle of screen) to see the trained agent, untrained agent, and training in-progress agent.
+6. Once opened, you may be in an untitled scene (name of scene in the top left in hierarchy), if so, select the assets folder, go into the scene folder, you can select the Main Menu scene and run (play button in top middle of screen) to see the trained agent, untrained agent, and training in-progress agent.
+
+6.5. The warnings in the console are just adding components to objects that require them, they can be ignored.
 
 
 
 ### How to Train the Agent
 
 I used Anaconda PowerShell to train my agent. I used Unity version 6000.0.60f1, Python version 3.14.0, NumPy 1.23.5 (used to organise and manipulate all the numerical data the agent learns from), and torch 2.2.1 (learns the behaviour of the agent)
+
+
+
+To train an agent, go into sample scene (Assets->Scenes->SampleScene), make sure hierarchy is just Main Camera, Global Light 2D, and the AIFinalLevel prefab, delete anything else if that's other objects in the scene, then do the following commands in Anaconda PowerShell.
+
+
 
 Here's what I typed into the prompt:
 
