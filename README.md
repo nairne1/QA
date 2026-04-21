@@ -14,7 +14,7 @@ This project compares AI-based testing with human testing to evaluate effectiven
 
 ### How to Run the Project
 
-Launch the exe
+Launch the exe.
 
 The main menu should appear, select the mode you wish to see: trained, untrained, in progress.
 
@@ -22,7 +22,7 @@ The main menu should appear, select the mode you wish to see: trained, untrained
 
 ### How I Trained the Agent
 
-I used Anaconda Powershell to train my agent.
+I used Anaconda Powershell to train my agent. I used Unity version 6000.0.60f1, Python version 3.14.0, numpy 1.23.5 (used to organise and manipulate all the numerical data the agent learns from), and torch 2.2.1 (learns the behaviour of the agent)
 
 Here's what I typed into the prompt:
 
@@ -30,9 +30,21 @@ Here's what I typed into the prompt:
 
 2\. make sure directory is correct, e.g. cd "C:\\Users\\nairn\\Documents\\Turtle Agent"
 
-3\. mlagents-learn --run-id=agent1
+3\. install/import torch and numpy versions
 
-4\. if using yaml file: mlagents-learn Behaviour\\PlayerAgent1.yaml --run-id=agent1
+4\. mlagents-learn --run-id=agent1
+
+5\. if using yaml file: mlagents-learn Behaviour\\PlayerAgent1.yaml --run-id=agent1
+
+
+
+In-order to see the Tensorboard graphs, write this in another Powershell Prompt:
+
+1. conda activate mlagents
+
+2\. cd C:\\Users\\nairn\\Documents\\QA
+
+3\. tensorboard --logdir=results
 
 
 

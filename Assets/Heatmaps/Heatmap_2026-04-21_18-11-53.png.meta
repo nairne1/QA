@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: a9c19d60f991460489bf95190c84715b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2551032462679804064
+    second: Heatmap_2026-04-21_18-11-53_0
+  - first:
+      213: -4950657551885543977
+    second: Heatmap_2026-04-21_18-11-53_1
+  - first:
+      213: 3105986176446024205
+    second: Heatmap_2026-04-21_18-11-53_2
+  - first:
+      213: 5415055905135184731
+    second: Heatmap_2026-04-21_18-11-53_3
+  - first:
+      213: -1787468086097083856
+    second: Heatmap_2026-04-21_18-11-53_4
+  - first:
+      213: 5472089028400211595
+    second: Heatmap_2026-04-21_18-11-53_5
+  - first:
+      213: 1073513842450784411
+    second: Heatmap_2026-04-21_18-11-53_6
+  - first:
+      213: -762360366311285236
+    second: Heatmap_2026-04-21_18-11-53_7
+  - first:
+      213: -2945917302337699225
+    second: Heatmap_2026-04-21_18-11-53_8
+  - first:
+      213: 2760400581337217640
+    second: Heatmap_2026-04-21_18-11-53_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 8
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 21
+        width: 360
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a805844286176320800000000000000
+      internalID: 2551032462679804064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_1
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 72
+        width: 23
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d5d14faf2bbb4bb0800000000000000
+      internalID: -4950657551885543977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_2
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 71
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0ac654a8fdaa1b20800000000000000
+      internalID: 3105986176446024205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_3
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 85
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5bc670d7a4262b40800000000000000
+      internalID: 5415055905135184731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_4
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 79
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03206d00f33a137e0800000000000000
+      internalID: -1787468086097083856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_5
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 54
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b866b1d9af3c0fb40800000000000000
+      internalID: 5472089028400211595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_6
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 54
+        width: 21
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b906eb8e623e5ee00800000000000000
+      internalID: 1073513842450784411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_7
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 61
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0edd27394d8b65f0800000000000000
+      internalID: -762360366311285236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_8
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 54
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7620c7852dffd17d0800000000000000
+      internalID: -2945917302337699225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Heatmap_2026-04-21_18-11-53_9
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 1
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86af26814b9ee4620800000000000000
+      internalID: 2760400581337217640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Heatmap_2026-04-21_18-11-53_0: 2551032462679804064
+      Heatmap_2026-04-21_18-11-53_1: -4950657551885543977
+      Heatmap_2026-04-21_18-11-53_2: 3105986176446024205
+      Heatmap_2026-04-21_18-11-53_3: 5415055905135184731
+      Heatmap_2026-04-21_18-11-53_4: -1787468086097083856
+      Heatmap_2026-04-21_18-11-53_5: 5472089028400211595
+      Heatmap_2026-04-21_18-11-53_6: 1073513842450784411
+      Heatmap_2026-04-21_18-11-53_7: -762360366311285236
+      Heatmap_2026-04-21_18-11-53_8: -2945917302337699225
+      Heatmap_2026-04-21_18-11-53_9: 2760400581337217640
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
